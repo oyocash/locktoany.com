@@ -1,0 +1,219 @@
+<html>
+    <head>
+        <title>Locktoany.com - Lock bitcoins to image</title>
+        <meta name="description" content="Lock bitcoins to image">
+        <meta name=”robots” content="index, follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <meta property="og:title" content="Locktoany.com - Lock bitcoins to image">
+        <meta property="og:image" content="/assets/logo.png">
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+        <link rel="manifest" href="/assets/site.webmanifest">
+
+        <link href="/styles/shuallet.css" rel="stylesheet" type="text/css">
+        <script src="/scripts/bsv.browser.min.js"></script>
+        <script src="/scripts/scripts.js"></script>
+        <link href="/styles/styles.css?5" rel="stylesheet">
+
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+    </head>
+    <body>
+      <div class="container">
+        <div class="top-bar">
+            <span class="home">
+                <span class="spacer"></span>
+                <span class="choice"><a href="/"><strong>HOME</strong></a></span>
+                <span class="major-separator">|</span>
+            </span>
+            <span class="links">
+                <span class="choice"><a href="https://www.hodlocker.com" target="_blank">HODLOCKER</a></span>
+                <span class="minor-separator">·</span>
+                <span class="choice"><a href="https://trends.cash" target="_blank">TRENDS.CASH</a></span>
+                <span class="minor-separator">·</span>
+                <span class="choice"><a href="https://maplocks.com" target="_blank">MAPLOCKS</a></span>
+                <span class="minor-separator">·</span>
+                <span class="choice"><a href="https://lockmarks.com" target="_blank">LOCKMARKS</a></span>
+                <span class="minor-separator">·</span>
+                <span class="choice"><a href="https://lockipedia.com" target="_blank">LOCKIPEDIA</a></span>
+                <span class="expander"></span>
+            </span>
+            <span class="expander"></span>
+            <span class="options">
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="choice">
+                    <a href="/wallet/"><span id="wallet-connect" style="display: block;">Wallet</span></a>
+                </span>
+                <span class="spacer"></span>
+            </span>
+        </div>
+
+        <div class="grid chartGrid">
+            <div class="resultTable">
+              <div class="resultTable-container resultTable-separator">
+                <div class="resultTable-title" id="articleTitle">
+                  lock image
+                </div>
+              </div>
+              <div>
+                <div class="popupForm">
+                    <input type="file" accept="image/*" class="long wide" id="postFile" onchange="previewFile()" />
+                </div>
+                <div class="popupForm">
+                    <input type="text" id="postLockAmount" placeholder="bitcoin" oninput="showConfirmationText()"> BSV
+                    <span style="width:20px;">&nbsp;</span>
+                    <select id="postLockHeightType" onchange="showConfirmationText()">
+                        <option value="current" selected>for</option>
+                        <option value="fixed">to</option>
+                    </select>
+                    <input type="text" id="postLockHeight" placeholder="blocks" oninput="showConfirmationText()"> <span id="blocksStr">blocks</span>
+                </div>
+
+                <div class="popupForm" id="confirmationText"></div><br />
+                <img src="" height="200" alt="Image preview" />
+
+                <div class="popupForm">
+                    <button id="newPostButton" onclick="addLock()">Lock</button>
+                </div>
+              </div>
+            </div>
+        </div>
+
+      </div>
+
+    <script src="/scripts/oneSatOrdinals.js"></script>
+    <script src="/scripts/shuallet.bundle.js"></script>
+    </body>
+</html>
+
+<script language='javascript'>
+    var text, blockchainType, lockAmount, lockHeight, lockHeightType;
+    var contentType;
+
+    function previewFile() {
+      const preview = document.querySelector("img");
+      const file = document.querySelector("input[type=file]").files[0];
+      const reader = new FileReader();
+
+      reader.addEventListener(
+        "load",
+        () => {
+          // convert image file to base64 string
+            console.log(reader.result)
+          preview.src = reader.result;
+        },
+        false,
+      );
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    }
+
+    const showConfirmationText = async() => {
+        const currentHeight = await getBlock();
+        lockAmount = parseFloat(document.getElementById('postLockAmount').value);
+        lockHeight = parseInt(document.getElementById('postLockHeight').value);
+        lockHeightType = document.getElementById('postLockHeightType').value;
+        if (lockHeightType === 'current') {
+            document.getElementById('blocksStr').innerHTML = `blocks`;
+            lockHeight = lockHeight + currentHeight;
+        } else {
+            document.getElementById('blocksStr').innerHTML = `block`;
+        }
+        if (!lockAmount || !lockHeight || !lockHeightType) {
+            return;
+        } else {
+            document.getElementById('confirmationText').innerHTML = `Locking ${lockAmount} BSV until block ${lockHeight}`;
+        }
+    }
+    const addLock = async() => {
+        if (!localStorage.walletAddress) {
+            alert("You must have a wallet to lock")
+            window.location.href = '/wallet/';
+        }
+        const file = document.querySelector("input[type=file]").files[0];
+        const reader = new FileReader();
+        reader.addEventListener("load",() => {
+            text = reader.result;
+            console.log(text)
+
+            lockAmount = parseFloat(document.getElementById('postLockAmount').value);
+            lockHeight = parseInt(document.getElementById('postLockHeight').value);
+            lockHeightType = document.getElementById('postLockHeightType').value;
+            const currentHeight = await getBlock();
+            if (lockHeightType === 'current')
+                lockHeight = lockHeight + currentHeight;
+            if (!text || !lockAmount || !lockHeight || !lockHeightType)
+                return;
+
+            document.getElementById("newPostButton").disabled = true;
+
+            let satoshis = lockAmount * 100000000;
+            let content = `${text}`;
+            var match = content.match(/^data:{\w+}\/(\w+);/);
+            contentType = `${match[1]}\/${match[2]}`
+
+            let rawtx = createLockOutput(localStorage.walletAddress, lockHeight, satoshis)
+            rawtx = await inscribeTx(content, contentType, null, localStorage.ownerAddress, rawtx)
+
+            if (rawtx) {
+                const c = 1;
+                if (c) {
+                    rawtx = await payForRawTx(rawtx)
+                    const t = await broadcast(rawtx, true, localStorage.walletAddress);
+                    if (t.length === 64) {
+                        addTx({'txid': t, 'height': lockHeight, 'satoshis': satoshis})
+                        alert(`Record added: ${t}`);
+
+                        document.getElementById('postContent').value = ""
+                        document.getElementById("newPostButton").disabled = false;
+                    } else {
+                        alert(t)
+                        document.getElementById("newPostButton").disabled = false;
+                    }
+                } else { 
+                    document.getElementById("newPostButton").disabled = false;
+                    return
+                }
+            } else {
+                document.getElementById("newPostButton").disabled = false;
+            }
+
+        },false);
+
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if (getUrlVars()["postfix"]) {
+            var postfix = decodeURIComponent(getUrlVars()["postfix"])
+            document.getElementById('postContent').value = postfix
+        }
+        if (getUrlVars()["amount"]) {
+            var amount = decodeURIComponent(getUrlVars()["amount"])
+            document.getElementById('postLockAmount').value = amount
+        }
+        if (getUrlVars()["height"]) {
+            var height = decodeURIComponent(getUrlVars()["height"])
+            document.getElementById('postLockHeight').value = height
+        }
+        if (getUrlVars()["heightType"]) {
+            var heightType = decodeURIComponent(getUrlVars()["heightType"])
+            document.getElementById('postLockHeightType').value = heightType
+        }
+
+        if(!localStorage.getItem('disclaimerShown')) {
+            alert("Disclaimer\n\nPlease be reminded that we accept no responsibility for any financial losses occurred to users as a result of using this app. Use at your own risk.")
+            localStorage.setItem('disclaimerShown', 1)
+        }
+    })
+</script>

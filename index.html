@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <title>Locktoany.com - Lock bitcoins to any data</title>
+        <meta name="description" content="Lock bitcoins to any data">
+        <meta name=”robots” content="index, follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <meta property="og:title" content="Locktoany.com - Lock bitcoins to any data">
+        <meta property="og:image" content="/assets/logo.png">
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+        <link rel="manifest" href="/assets/site.webmanifest">
+
+        <link href="/styles/shuallet.css" rel="stylesheet" type="text/css">
+        <script src="/scripts/bsv.browser.min.js"></script>
+        <script src="/scripts/scripts.js"></script>
+        <link href="/styles/styles.css?11" rel="stylesheet">
+
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+    </head>
+    <body>
+      <div class="container">
+        <div class="top-bar">
+            <span class="home">
+                <span class="spacer"></span>
+                <span class="choice"><a href="/"><strong>HOME</strong></a></span>
+                <span class="major-separator">|</span>
+            </span>
+            <span class="links">
+                <span class="choice"><a href="https://www.hodlocker.com" target="_blank">HODLOCKER</a></span>
+                <span class="minor-separator">·</span>
+                <span class="choice"><a href="https://trends.cash" target="_blank">TRENDS.CASH</a></span>
+                <span class="minor-separator">·</span>
+                <span class="choice"><a href="https://maplocks.com" target="_blank">MAPLOCKS</a></span>
+                <span class="minor-separator">·</span>
+                <span class="choice"><a href="https://lockmarks.com" target="_blank">LOCKMARKS</a></span>
+                <span class="minor-separator">·</span>
+                <span class="choice"><a href="https://lockipedia.com" target="_blank">LOCKIPEDIA</a></span>
+                <span class="expander"></span>
+            </span>
+            <span class="expander"></span>
+            <span class="options">
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="choice">
+                    <a href="/wallet/"><span id="wallet-connect" style="display: block;">Wallet</span></a>
+                </span>
+                <span class="spacer"></span>
+            </span>
+        </div>
+
+        <div class="content">
+            <pre>Locktoany</pre>
+            <pre class="description">lock bitcoins (bsv) to any data</pre>
+            <a href="/lock/image.html"><button>Lock image</button></a>
+            <a href="/lock/text.html"><button>Lock text</button></a>
+            <a href="/lock/file.html"><button>Lock file</button></a>
+            <a href="/lock/transaction.html"><button>Lock transaction</button></a>
+        </div>
+
+      </div>
+      
+    <script src="/scripts/shuallet.bundle.js"></script>
+    </body>
+</html>
+
+<script language='javascript'>
+    document.addEventListener("DOMContentLoaded", function() {
+        if(!localStorage.getItem('disclaimerShown')) {
+            alert("Disclaimer\n\nPlease be reminded that we accept no responsibility for any financial losses occurred to users as a result of using this app. Use at your own risk.")
+            localStorage.setItem('disclaimerShown', 1)
+        }
+    })
+</script>
